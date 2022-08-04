@@ -26,13 +26,22 @@ router.get('/:deckId', (req, res) => {
 router.post('/', (req, response) => {
     let db_connect = dbo.getDb('flashcardApp')
     let myDeck = {
-        title: req.body.deckTitle,
+        title: req.body.title,
         flashcards: [],
     }
     db_connect.collection('flashcards').insertOne(myDeck, (err, res) => {
         if(err) throw err
         response.json(res)
     })
+})
+
+router.post('/:deckId', (req, response) => {
+    let db_connect = dbo.getDb('flashcardApp')
+    let myquery = {_id: ObjectId(req.params.deckId)}
+    db_connect.collection('flashcards').updateOne(myquery, {$push: {flashcards: req.body}}, (err, res) =>{
+        if(err) throw err
+        response.json(res)
+    }) 
 })
 
 router.delete('/:deckId', (req, response) => {
