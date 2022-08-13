@@ -6,59 +6,37 @@ const dbo = require("../db/conn")
 
 const ObjectId = require('mongodb').ObjectId
 
-router.get('/', (req, res) => {
-    let db_connect = dbo.getDb('flashcardApp')
-    db_connect.collection('flashcards').find({}).toArray((err, result) => {
-        if(err) throw err
-        res.json(result)
-    })
-})
-
-router.get('/:deckId', (req, res) => {
-    let db_connect = dbo.getDb('flashcardApp')
-    let myquery = {_id: ObjectId(req.params.deckId)}
-    db_connect.collection('flashcards').findOne(myquery, (err, result) => {
-        if(err) throw err
-        res.json(result)
-    })
-})
-
-router.post('/', (req, response) => {
-    let db_connect = dbo.getDb('flashcardApp')
-    let myDeck = {
-        title: req.body.title,
-        flashcards: [],
-    }
-    db_connect.collection('flashcards').insertOne(myDeck, (err, res) => {
-        if(err) throw err
-        response.json(res)
-    })
-})
-
 router.post('/:deckId', (req, response) => {
     let db_connect = dbo.getDb('flashcardApp')
+    let flashcard = {
+        _id: new ObjectId(),
+        frontText: req.body.frontText,
+        backText: req.body.backText
+    }
+    console.log(flashcard)
     let myquery = {_id: ObjectId(req.params.deckId)}
-    db_connect.collection('flashcards').updateOne(myquery, {$push: {flashcards: req.body}}, (err, res) =>{
+    db_connect.collection('flashcards').update(myquery, {$push: {flashcards: flashcard}}, (err, res) =>{
         if(err) throw err
         response.json(res)
     }) 
 })
 
-router.delete('/:deckId', (req, response) => {
+router.patch('/:deckId/:flashcardId', (req, response) => {
     let db_connect = dbo.getDb('flashcardApp')
-    let myquery = {_id: ObjectId(req.params.deckId)}
-    db_connect.collection('flashcards').deleteOne(myquery, (err, obj) => {
+    let myquery = {'flashcards._id': ObjectId(req.params.flashcardId)}
+    db_connect.collection('flashcards').updateOne(myquery, {$set: {'flashcards.$.frontText': req.body.frontText, 'flashcards.$.backText': req.body.backText}}, (err, res) =>{
         if(err) throw err
-        response.json(obj)
+        response.json(res)
     })
 })
 
-router.patch('/:deckId', (req, response) => {
+router.delete('/:deckId/:flashcardId', (req, response) => {
     let db_connect = dbo.getDb('flashcardApp')
-    let myquery = {_id: ObjectId(req.params.deckId)}
-    db_connect.collection('flashcards').updateOne(myquery, {$set: req.body}, (err, res) =>{
+    let deckQuery = {_id: ObjectId(req.params.deckId)}
+    let flashcardQuery = {_id: ObjectId(req.params.flashcardId)}
+    db_connect.collection('flashcards').updateOne(deckQuery, {$pull: { flashcards: flashcardQuery}}, (err, obj) => {
         if(err) throw err
-        response.json(res)
+        response.json(obj)
     })
 })
 

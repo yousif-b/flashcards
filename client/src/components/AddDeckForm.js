@@ -30,15 +30,21 @@ export default function AddDeckForm(){
     }
     
     return (
-        <div>
-            <form id = 'add-deck-form' onSubmit = {handleSubmit}>
-                <input 
-                type = 'text'
-                placeholder='Deck Title'
-                onChange = {(e) => setTitle(e.target.value)} // two way data binding
-                value = {title} />
+        <div className = 'head'>
+            <form onSubmit = {handleSubmit}>
+                <h1>Flashcards</h1>
                 {error && <p>{error}</p>}
-                <button>Submit</button>
+                <div className='head-input'>
+                    <input
+                    className = 'big-input' 
+                    type = 'text'
+                    placeholder='New Deck Title'
+                    onChange = {(e) => setTitle(e.target.value)}
+                    value = {title}
+                    maxLength = '25'
+                    />
+                    <button className='btn btn-light'>Add</button>
+                </div>
             </form>
         </div>
     )

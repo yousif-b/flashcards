@@ -7,6 +7,7 @@ const port = process.env.PORT;
 
 app.use(cors());
 app.use(express.json());
+app.use(require('./routes/decks'))
 app.use(require('./routes/flashcards'))
 
 const dbo = require("./db/conn")

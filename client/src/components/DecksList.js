@@ -11,13 +11,10 @@ export default function DecksList(){
     }, [])
     
     return(
-        <div>
-            <h1>Deck List: </h1>
-            <div className = 'deck-list'>
-                {decks && decks.map((deck) => (
-                <DeckPreview key = {deck._id} deck = {deck}/>
-                ))}
-            </div>
+        <div className='deck-list'>
+            {decks && decks.map((deck) => (
+            <DeckPreview key = {deck._id} deck = {deck}/>
+            ))}
         </div>
     )
 }

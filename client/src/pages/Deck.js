@@ -2,10 +2,12 @@ import { useState, useEffect } from "react"
 import { useParams } from "react-router-dom"
 import AddFlashcardForm from "../components/AddFlashcardForm"
 import Flashcard from "../components/Flashcard"
+import FullFlashcard from "../components/FullFlashcard"
 
 export default function Deck(){
     const [deckTitle, setDeckTitle] = useState('')
     const [flashcards, setFlashcards] = useState(null)
+    const [data, setData] = useState(null)
     const [loading, setLoading] = useState(true)
     const [index, setIndex] = useState(0)
     const params = useParams()
@@ -18,35 +20,39 @@ export default function Deck(){
 
     function handleDeckData(data){
         setDeckTitle(data.title)
+        setData(data.flashcards)
         let arr = []
-        data.flashcards.map((flashcard, index) => {
-            arr.push(<Flashcard key = {index} flashcard = {flashcard} />)
+        data.flashcards.map(flashcard => {
+            arr.push(<Flashcard key = {flashcard._id} flashcard = {flashcard} />)
         })
         setFlashcards(arr)
-        console.log(arr)
         setLoading(false)
     }
 
     function increment(){
-        if(index+1 !== flashcards.length){
-            setIndex(index+1)
-        }
+        if(index+1 !== flashcards.length) setIndex(index+1)
     }
 
     function decrement(){
-        if(index !== 0){
-            setIndex(index-1)
-        }
+        if(index !== 0) setIndex(index-1)
     }
 
     return (
-        <div>
-            <h2>Deck</h2>
-            <h2>{deckTitle}</h2>
-            <AddFlashcardForm deckId = {params.id} />
+        <div className = 'page'>
+            <AddFlashcardForm deckId = {params.id} deckTitle = {deckTitle}/>
             {loading || !flashcards ? (<div>loading... </div>) : (flashcards[index])}
-            <button onClick = {decrement}>Left</button>
-            <button onClick = {increment}>Right</button>
+            <div className='flashcard-btns'>
+                <button onClick = {decrement}>Left</button>
+                {<p>{index}</p>}
+                <button onClick = {increment}>Right</button>
+            </div>
+            <div className = 'flashcard-list'>
+                {loading || !flashcards ? (<div>loading... </div>) : (
+                    data.map(flashcard => (
+                        <FullFlashcard key = {flashcard._id} flashcard = {flashcard} deckId = {params.id}/>
+                    ))
+                )}
+            </div>
         </div>
     )
 }

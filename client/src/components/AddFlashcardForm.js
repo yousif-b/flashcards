@@ -1,4 +1,5 @@
 import {useState} from 'react'
+import { Link } from "react-router-dom";
 
 export default function AddFlashcardForm(props){
     const [newFlashcardFront, setNewFlashcardFront] = useState('')
@@ -31,19 +32,27 @@ export default function AddFlashcardForm(props){
     }
 
     return(
-        <form id = 'add-flashcard-form' onSubmit = {handleSubmit}>
-            <input 
-            type = 'text'
-            placeholder='Flashcard Front Text'
-            onChange = {(e) => setNewFlashcardFront(e.target.value)}
-            value = {newFlashcardFront}/>
-            <input 
-            type = 'text'
-            placeholder='Flashcard Back Text'
-            onChange = {(e) => setNewFlashcardBack(e.target.value)}
-            value = {newFlashcardBack}/>
-            {error && <p>{error}</p>}
-            <button>Submit</button>
-        </form>
+        <div className = 'head'>
+            <form onSubmit = {handleSubmit}>
+                <h1>{props.deckTitle}</h1>
+                <div className='head-input'>
+                <Link to = '/'><button style = {{height: '100%'}} className='btn'>Back</button></Link>
+                <textarea
+                className='flashcard-input'
+                maxLength = {150}
+                placeholder='Flashcard Front Text'
+                onChange = {(e) => setNewFlashcardFront(e.target.value)}
+                value = {newFlashcardFront}/>
+                <textarea 
+                className='flashcard-input'
+                maxLength = {150}
+                placeholder='Flashcard Back Text'
+                onChange = {(e) => setNewFlashcardBack(e.target.value)}
+                value = {newFlashcardBack}/>
+                {error && <p>{error}</p>}
+                <button className='btn'>Submit</button>
+                </div>
+            </form>            
+        </div>
     )
 }

@@ -4,7 +4,6 @@ import { useState } from 'react'
 export default function Flashcard(props){
   const [text, setText] = useState(props.flashcard.frontText)
   const [flip, setFlip] = useState(false)
-
   function flipCard(){
     switch(flip){
         case false:
